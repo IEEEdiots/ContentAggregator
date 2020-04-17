@@ -3,10 +3,10 @@ from bs4 import BeautifulSoup
 
 def crawl_page():
     #Available urls
-    urls = ['https://www.news247.gr/politiki/','https://www.news247.gr/koinonia/','https://www.news247.gr/oikonomia/','https://www.news247.gr/kosmos/']
-    #Types of artiles
-    content = ['politics','society','economy','global']
-    #Adding headers
+    urls = ['https://www.tovima.gr/category/politics','https://www.tovima.gr/category/world/','https://www.tovima.gr/category/sports/','https://www.tovima.gr/category/culture/']
+    #Types of articles
+    content = ['politics','global','economy','sports','culture']
+    #Adding headers 
     headers = {
         'User-agent':'Mozilla/5.0'
     }
@@ -20,29 +20,27 @@ def crawl_page():
         response = requests.get(url, headers=headers)
         #Parse the page 
         soup = BeautifulSoup(response.content,'html.parser')
-        articles = soup.find_all('article')
+        #Find the article element
+        div_containter = soup.find('div',{'id':'full-article-list'})
+        ul = div_containter.find('ul')
         #Loop through all articles
-        for article in articles:
-            if article.find('figure') is None:
-                continue
+        for article in ul.find_all('li'):
             #Title and url
-            info = article.find('a',{'class':'article__image'})
-            title = info['title']
+            info = article.find('a',{'href':True})
             link = info['href']
+            title = info['title']
             #Image
-            image_element = info.find('img')
-            image = image_element['src']
+            image_element = article.find('div',{'class':'absimage'})
+            image = image_element['style'].split('(')[1].split(')')[0]
             #Summary
-            try:
-                summary_p = article.find('p')
-                summary = summary_p.text
-            except AttributeError:
-                continue
-            time_element = article.find('time')
-            time = time_element['datetime']
+            sum_span = article.find('span',{'class':'normal-desc'})
+            summary = sum_span.text
+            #Time
+            time_elem = article.find('span',{'class':'grey-c'})
+            time = time_elem.text[2:]
             #Complete data
             article_data = {
-                'site':'news247',
+                'site':'tovima',
                 'type':content[index],
                 'title':title,
                 'link':link,

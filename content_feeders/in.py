@@ -54,6 +54,7 @@ def crawl_page():
             time = time_elem['datetime']
             #Complete data
             article_data = {
+                'site':'in',
                 'type':content[index],
                 'title':title,
                 'link':link,
