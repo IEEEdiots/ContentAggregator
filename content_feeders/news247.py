@@ -48,7 +48,7 @@ def crawl_page():
                 'link':link,
                 'image':image,
                 'summary':summary,
-                'time':time
+                'date':time
             }
             #Add the article data to the complete list
             data_list.append(article_data)
