@@ -8,5 +8,7 @@ class News(models.Model):
     origin = models.CharField(max_length=20)
     pub_date = models.DateField('date published')
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
